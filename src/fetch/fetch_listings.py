@@ -1,3 +1,11 @@
+"""
+fetch Reddit listings and save snapshots as JSONL.
+
+- read-only collection from r/AskReddit
+- multiple surfaces: new, hot, rising, controversial
+- log runs and save JSONL to local/raw_jsonl
+"""
+
 import json
 import logging
 from datetime import datetime
@@ -10,19 +18,27 @@ NEW_TARGET = 1000
 SURFACE_LIMIT = 50
 SURFACES = ["new", "hot", "rising", "controversial"]
 
+
 def utc_stamp():
+    """UTC timestamp string YYYYMMDD_HHMMSS."""
     return datetime.utcnow().strftime("%Y%m%d_%H%M%S")
 
+
 def ensure_dirs():
+    """Create local/raw_jsonl and local/logs directories."""
     Path("local/raw_jsonl").mkdir(parents=True, exist_ok=True)
     Path("local/logs").mkdir(parents=True, exist_ok=True)
 
+
 def write_jsonl(path, rows):
+    """Write list of dicts to JSONL at given path."""
     with path.open("w", encoding="utf-8") as f:
         for r in rows:
             f.write(json.dumps(r, default=str) + "\n")
 
+
 def main():
+    """Run one collection of all surfaces and write results."""
     ensure_dirs()
     run_id = utc_stamp()
 
@@ -67,6 +83,7 @@ def main():
         out_path = Path(f"local/raw_jsonl/{run_id}_{surface}_limit{limit}.jsonl")
         write_jsonl(out_path, rows)
         logging.info(f"Wrote {len(rows)} rows to {out_path}")
+
 
 if __name__ == "__main__":
     main()

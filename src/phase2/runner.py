@@ -1,3 +1,11 @@
+"""
+single-run snapshot collector
+
+- fetches listing snapshots once per run
+- writes raw jsonl outputs and logs
+- appends manifest record
+"""
+
 from __future__ import annotations
 
 import json

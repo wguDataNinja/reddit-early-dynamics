@@ -1,3 +1,12 @@
+"""
+append-only cohort state tracking
+
+- replays post state from jsonl events
+- detects first drop from /new
+- selects a small cohort using repeated sampling
+- schedules limited per-post follow-up fetches
+"""
+
 from __future__ import annotations
 
 import json

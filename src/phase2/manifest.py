@@ -1,3 +1,11 @@
+"""
+append-only run manifest writer
+
+- one record per run attempt
+- includes skips and health flags
+- uses a dedicated manifest lock separate from the run lock
+"""
+
 from __future__ import annotations
 
 import json
@@ -9,6 +17,13 @@ from typing import Optional
 
 @dataclass(frozen=True)
 class RunManifestRecord:
+    """
+    single manifest row for one run attempt
+
+    - timing and skip fields
+    - per-run and cumulative http accounting
+    - core and cohort diagnostics
+    """
     # Run timing
     run_id_utc: str
     run_started_utc: str
@@ -51,11 +66,23 @@ class RunManifestRecord:
 
 @dataclass(frozen=True)
 class ManifestLockResult:
+    """
+    result of attempting to acquire the manifest writer lock
+
+    - this lock only protects the manifest file
+    - independent of the run overlap lock
+    """
     acquired: bool
     reason: Optional[str] = None
 
 
 def _try_acquire_atomic_lock(lock_path: str) -> ManifestLockResult:
+    """
+    attempt to acquire the manifest writer lock
+
+    - creates the lock file atomically
+    - returns acquired false if the lock already exists
+    """
     lp = Path(lock_path)
     lp.parent.mkdir(parents=True, exist_ok=True)
     try:
@@ -69,17 +96,26 @@ def _try_acquire_atomic_lock(lock_path: str) -> ManifestLockResult:
 
 
 def _release_lock(lock_path: str) -> None:
+    """
+    release the manifest writer lock
+
+    - best-effort cleanup
+    - missing lock file means nothing to release
+    """
     try:
         Path(lock_path).unlink(missing_ok=True)
     except Exception:
-        # Never raise from lock release
+        # never raise from lock release
         pass
 
 
 def append_manifest_record(path: str, rec: RunManifestRecord) -> None:
     """
-    Append-only, single-writer semantics via a dedicated manifest lock.
-    No waiting, no retries: if the lock is present, raise so the caller can log it.
+    append-only single-writer semantics via a dedicated manifest lock
+
+    - no waiting
+    - no retries
+    - caller handles lock failures explicitly
     """
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)

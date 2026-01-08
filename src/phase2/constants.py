@@ -1,4 +1,11 @@
-# src/phase2/constants.py
+"""
+frozen collection constants.
+
+- subreddit target and listing surfaces
+- snapshot limits and success floors
+- socal, git-ignored output paths used during collection
+"""
+
 from __future__ import annotations
 
 # Frozen Phase 2 constants. Edit only before the 7-day window begins.

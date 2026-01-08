@@ -1,3 +1,10 @@
+"""
+collection start marker utilities
+
+- a single utc start timestamp
+- anchors day indexing and cohort selection seeds
+"""
+
 from __future__ import annotations
 
 import os
@@ -6,8 +13,10 @@ from pathlib import Path
 
 def ensure_phase2_start_marker(path: str, run_started_utc: str) -> None:
     """
-    Writes a single UTC start marker once, at the beginning of the first run.
-    No waiting, no retries. If it already exists, do nothing.
+    write the collection start marker once
+
+    - creates the file atomically
+    - does nothing if it already exists
     """
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
@@ -21,6 +30,11 @@ def ensure_phase2_start_marker(path: str, run_started_utc: str) -> None:
 
 
 def read_phase2_start_marker(path: str) -> str | None:
+    """
+    read the stored collection start marker
+
+    - returns none if missing or unreadable
+    """
     p = Path(path)
     if not p.exists():
         return None

@@ -1,3 +1,11 @@
+"""
+praw client helper with request counting
+
+- wraps the praw requester
+- counts outgoing requests
+- used for run-level http counts
+"""
+
 from __future__ import annotations
 
 import os
@@ -6,6 +14,10 @@ import prawcore
 
 
 class CountingRequestor(prawcore.requestor.Requestor):
+    """
+    - increments request_count on each request
+    - approximate accounting only
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.request_count = 0
