@@ -8,7 +8,7 @@ All figures are **descriptive and non-causal**. Their purpose is to make the col
 
 ## Figure 1 — Collection coverage and gaps
 
-- **Image:** [`figure_1_collection_coverage.png`](figure_1_collection_coverage.png)  
+![Figure 1 — Collection coverage and gaps](figure_1_collection_coverage.png)
 - **Script:** [`figure_1_collection_coverage.py`](figure_1_collection_coverage.py)  
 - **Data:** [`data/collection_timeline_segments_data.csv`](data/collection_timeline_segments_data.csv)
 
@@ -32,7 +32,7 @@ periods to avoid inferring activity during unobserved time.
 
 ## Figure 2 — Observation depth in `/new`
 
-- **Image:** [`figure_2_observation_depth.png`](figure_2_observation_depth.png)  
+![Figure 2 — Observation depth in `/new`](figure_2_observation_depth.png)
 - **Script:** [`figure_2_observation_depth.py`](figure_2_observation_depth.py)  
 - **Data:**  
   - [`data/observation_depth_distribution_freq.csv`](data/observation_depth_distribution_freq.csv)  
@@ -41,6 +41,8 @@ periods to avoid inferring activity during unobserved time.
 **What this figure shows**  
 How many times an observed post appears in `/new` during uninterrupted
 collection periods.
+
+The spike at x = 1 is examined in [`docs/analysis/observation_depth_investigation/`](../analysis/observation_depth_investigation/).
 
 **How to read it**  
 Higher values mean a post remained visible across multiple snapshots.
@@ -53,7 +55,7 @@ Limited engagement cannot typically be explained by lack of `/new` exposure alon
 
 ## Figure 3 — Ranked surface scarcity
 
-- **Image:** [`figure_3_ranked_surface_scarcity.png`](figure_3_ranked_surface_scarcity.png)  
+![Figure 3 — Ranked surface scarcity](figure_3_ranked_surface_scarcity.png)
 - **Script:** [`figure_3_ranked_surface_scarcity.py`](figure_3_ranked_surface_scarcity.py)  
 - **Data:** [`data/ranked_intersection_rates.csv`](data/ranked_intersection_rates.csv)
 
@@ -74,7 +76,7 @@ These rates describe platform structure, not post quality or outcomes.
 
 ## Figure 4 — Cadence to `/hot`
 
-- **Image:** [`figure_4_lag_to_hot.png`](figure_4_lag_to_hot.png)  
+![Figure 4 — Cadence to `/hot`](figure_4_lag_to_hot.png)
 - **Script:** [`figure_4_lag_to_hot.py`](figure_4_lag_to_hot.py)  
 - **Data:**  
   - [`data/lag_to_hot_hist_1min.csv`](data/lag_to_hot_hist_1min.csv)  
