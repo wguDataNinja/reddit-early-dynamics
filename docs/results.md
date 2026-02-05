@@ -1,111 +1,42 @@
 # Results
 
-This document tracks collection status and operational stability.
+This section summarizes what can be observed about early post visibility and engagement in r/AskReddit during the study window. All statements below are derived directly from the analysis tables and should be read as descriptive facts under partial observability, not as causal claims.
 
-It records what has been collected and how the system is behaving.  
-It does not interpret patterns or explain outcomes.
+## Collection coverage and segmentation
 
----
+The dataset consists of repeated listing snapshots collected at approximately 15-minute intervals over a seven-day window. Most runs occur at regular cadence, with a small number of longer gaps. Gaps exceeding 60 minutes are treated as unobserved time and define four uninterrupted collection segments. No analysis crosses these segment boundaries.
 
-## Collection status
+This segmentation makes unobserved time explicit and limits analysis to uninterrupted periods.
 
-- Collection window: active  
-- Window length: 7 days  
-- Start marker (UTC): 2026-01-06T16:36:56Z  
+## Visibility in the chronological listing
 
----
+Posts observed in the `/new` listing often remain visible across many consecutive snapshots. The median post appears 27 times within an uninterrupted segment, corresponding to several hours of observed chronological presence. Roughly 8% of observed posts appear only once or twice before disappearing from captured listings.
 
-## Data written per run
+The observation-depth distribution includes a substantial mass of posts observed exactly once. This feature is examined in `docs/analysis/observation_depth_investigation/`. That analysis describes multiple observed patterns: posts that disappear between snapshots, posts with multi-hour persistence, and a smaller class of late-seen posts coinciding with collection gaps. The persistence pattern among posts observed more than once remains visible in the distribution.
 
-Each run writes:
+A detailed investigation of the observation-depth distribution is provided in  
+`docs/analysis/observation_depth_investigation/observation_depth_investigation.md`.
 
-- `/new` snapshot, up to 1,000 posts  
-- `hot` snapshot, up to 100 posts  
-- `rising` snapshot, up to 100 posts  
-- `controversial` snapshot, up to 100 posts  
+## Engagement at first observation
 
-All snapshots are written as local JSONL files.
+A majority of observed posts already have comments present at their first captured appearance. Engagement in this study is measured using comment presence and counts. Vote scores are not analyzed because they are not decomposed into upvotes and downvotes and vary over time. Among posts that initially appear with zero comments, many accumulate comments within subsequent observations while they remain visible.
 
-Each run also writes:
-- One per-run log file  
-- One appended manifest record  
-- Cohort state events (if cohort is enabled)
+These patterns describe engagement as observed, not total engagement over a post’s lifetime.
 
----
+## Ranked surface scarcity
 
-## Run accounting
+Only a small fraction of observed posts ever appear in ranked listing surfaces. Approximately 13% of observed posts appear in `/hot`, and about 1–2% appear in `/rising`, based on top-100 snapshots. These rates are lower bounds due to ranked surface truncation.
 
-Run logs and the manifest record:
+Appearance in `/rising` is not a prerequisite for appearance in `/hot`. Many posts that reach `/hot` are never observed in `/rising`, consistent with non-nested overlap in the observed listings.
 
-- Per-run totals  
-- Skips  
-- Misses  
-- API call counts  
+## Timing of ranked promotion
 
-These logs are the authoritative source for operational status.
+When posts do reach `/hot`, promotion often occurs within one or two snapshot intervals after first being observed in `/new`. Delayed promotion is uncommon, and the distribution of lag times is strongly front-loaded.
 
----
+This timing reflects the discrete snapshot cadence in the observations.
 
-## Stability checks
+## Summary
 
-Observed so far:
+Taken together, these observations show that for posts observed in r/AskReddit, early chronological presence is typically observed across many snapshots, while ranked-surface intersections are rare in the observed data. Posts that do not reach ranked surfaces are typically observed multiple times in `/new`.
 
-- No skipped runs  
-- No repeated misses  
-- Stable row counts for `/new`, `hot`, and `controversial`  
-- Consistent underfill on `rising`  
-
-Underfill on `rising` is treated as an observed property of the listing response.
-
----
-
-## Cohort status
-
-The **cohort** is enabled.
-
-The cohort is approximately 1 percent of expected posts, selected during days 2–3 of the 7-day collection window and followed to later post ages.
-
-Selection details:
-- Drawn from early `/new` observations  
-- Split into three bins: low, medium, and high early engagement  
-- Deterministic and fixed once recruited  
-
-Operational notes:
-- Cohort API usage increases sharply during the recruitment window  
-- This increase is expected while the full cohort is assembled  
-- Once recruitment completes, cohort-related API calls are expected to level out  
-
-API usage is monitored continuously.
-
-After the full cohort is collected:
-- Total API usage will be reviewed  
-- Cohort cost will be weighed against analytical value  
-- Cohort tracking may be continued or stopped  
-
-If rate limiting, sustained errors, or instability appear, cohort tracking will be disabled without affecting core collection.
-
----
-
-## What this does not contain
-
-This document does not include:
-
-- Diagnostics  
-- Distributional summaries  
-- Visibility pathway analysis  
-- Narrative conclusions  
-
-These belong after collection completes.
-
----
-
-## Updates to append later
-
-After collection completes:
-- Total runs completed  
-- Total skips and misses  
-- Total API calls  
-- Total raw files written  
-
-After diagnostics begin:
-- What the data can and cannot support
+This study does not assess causality, optimization strategies, or post quality. It documents observable properties of Reddit’s listing architecture under real collection constraints.

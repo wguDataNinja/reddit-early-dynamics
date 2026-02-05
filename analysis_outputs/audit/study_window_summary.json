@@ -1,0 +1,20 @@
+{
+  "anchor": {
+    "anchor": "first_sustained_15min_cadence",
+    "cadence_max": 17.0,
+    "cadence_min": 13.0,
+    "streak_length": 3
+  },
+  "in_window_gap_minutes_median": 15.221218,
+  "in_window_gap_minutes_min": 0.001469,
+  "in_window_gap_minutes_p95": 15.757169,
+  "in_window_hard_gaps_gt30m": 6,
+  "in_window_hard_gaps_gt60m": 3,
+  "in_window_partial": 3,
+  "in_window_skipped": 17,
+  "in_window_success": 615,
+  "in_window_total": 635,
+  "manifest_total_with_run_started_utc": 1480,
+  "window_end_utc": "2026-01-13T16:39:46.917713Z",
+  "window_start_utc": "2026-01-06T16:39:46.917713Z"
+}

@@ -1,0 +1,5 @@
+metric,numerator,denominator,value_pct
+ever_in_hot_rate,3579,27226,13.145523
+ever_in_rising_rate,440,27226,1.616102
+ever_in_both_rate,440,27226,1.616102
+hot_without_rising_rate_among_hot,3139,3579,87.706063

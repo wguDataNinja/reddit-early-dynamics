@@ -1,111 +1,52 @@
 # Methodology
 
-This document describes how data is collected and structured.  
-It focuses on measurement mechanics, not interpretation.
+This document describes the analysis pipeline and table definitions. It focuses on measurement mechanics.
 
----
+## Run universe
 
-## Study design
+- Source: `local/logs/phase2_run_manifest.jsonl`
+- Roster: `analysis_outputs/audit/study_window_runs_compact.csv` (success-classified `run_id_utc` only)
+- Inclusion: runs whose `run_id_utc` appears in the roster
 
-Prospective observational measurement study.
+The study window is fixed at seven days by design.
 
-- Data collected forward in time  
-- No retroactive backfills  
-- No mid-run changes once collection begins  
+## Segmentation
 
----
+- Hard gap threshold: 60.0 minutes
+- `segment_id` increments when `dt_minutes > 60.0`
+- No stitching across segments
+- `gap_regime` values: cadence (`dt_minutes <= 20`), soft (`20 < dt_minutes <= 60`), hard (`dt_minutes > 60`)
 
-## Target and scope
+## Unit of analysis
 
-- Subreddit: r/AskReddit  
-- Unit of observation: posts  
-- Public data excludes post text and usernames  
-- Time horizon: one fixed 7-day collection window  
+- Post-segment: `(post_id, segment_id)`
+- One run = one observation opportunity
 
----
+## Core tables
 
-## Listing-based sampling
+These tables are the sole inputs to all downstream analysis, figures, and summaries; no raw logs or snapshots are consumed beyond this point.
 
-All data is collected through subreddit listing endpoints.
+1. `run_level.csv`
+- Derived from the manifest within the study window.
 
-### `/new`
+2. `post_level.csv`
+- Aggregated from `/new` snapshots within segments.
+- `n_appearances`: count of runs in the segment where the post appears in `/new`
+- `comments_present_at_first_observation`: `num_comments > 0` at first appearance in the segment
+- `ever_observed_comments`: any appearance has `num_comments > 0`
+- `first_observed_nonzero_comments_obs_index`: 0-based index since first appearance where `num_comments > 0`
+- `is_fresh_capture`: `discovery_lag_minutes <= 15`
+- `right_censored`: last_seen_time_utc == segment end time
 
-- Primary sampling surface  
-- Dense coverage of recent posts  
-- Chronological order  
-- Posts observed only while visible in `/new`  
+3. `ranked_intersections.csv`
+- Links `/new` post-segments to observed appearances in `hot` and `rising`.
+- Lower bound only, due to top-N snapshots.
 
-### Ranked listings
+## Censoring
 
-Visibility surfaces captured each run:
+- Right-censoring: post remains visible at segment end.
+- Left-censoring: posts may have engagement prior to first observation (not directly observed).
 
-- `hot`  
-- `rising`  
-- `controversial`  
+## Output summary
 
-For each surface:
-- First page only  
-- Up to 100 posts  
-
----
-
-## Snapshot cadence
-
-- Fixed before collection begins  
-- One execution per run at a constant interval  
-
----
-
-## Snapshot contents
-
-Each snapshot records:
-
-- Post identifier  
-- Observation timestamp  
-- Listing surface  
-- Rank position (ranked listings only)  
-- Engagement fields at capture time  
-
----
-
-## Observation limits
-
-- Discovery lag  
-- Coverage gaps  
-- Right censoring  
-
-These arise from listing visibility constraints.
-
----
-
-## Pilot calibration
-
-A short pilot was used to confirm observability limits, cadence stability, and pipeline health.
-
----
-
-## Long-horizon cohort
-
-A **cohort** is a small, deterministic set of posts selected during days 2–3 of the 7-day collection window and followed to later post ages.
-
-- Selected from early `/new` observations  
-- Stratified into low, medium, and high early engagement bins  
-- Limited in size to control API usage  
-- Followed at fixed post ages  
-
----
-
-## Data storage
-
-- Raw data: local JSONL files, one per surface per run  
-- Public data: redacted CSVs with no post text or usernames  
-
----
-
-## What this does not do
-
-- Measure impressions  
-- Infer ranking algorithms  
-- Track users  
-- Poll posts individually  
-- Make causal or predictive claims  
+- `analysis_outputs/ANALYSIS_FACTS.md` is generated from the produced tables only.

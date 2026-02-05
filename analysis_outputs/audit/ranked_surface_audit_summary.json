@@ -1,0 +1,32 @@
+{
+  "controversial": {
+    "files_missing": 0,
+    "files_present": 615,
+    "row_count_max": 100,
+    "row_count_median": 100,
+    "row_count_min": 100,
+    "runs_expected": 615,
+    "underfilled_files": 0,
+    "zero_row_files": 0
+  },
+  "hot": {
+    "files_missing": 0,
+    "files_present": 615,
+    "row_count_max": 100,
+    "row_count_median": 100,
+    "row_count_min": 100,
+    "runs_expected": 615,
+    "underfilled_files": 0,
+    "zero_row_files": 0
+  },
+  "rising": {
+    "files_missing": 0,
+    "files_present": 615,
+    "row_count_max": 28,
+    "row_count_median": 25,
+    "row_count_min": 23,
+    "runs_expected": 615,
+    "underfilled_files": 615,
+    "zero_row_files": 0
+  }
+}

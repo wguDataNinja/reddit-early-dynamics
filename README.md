@@ -1,119 +1,108 @@
 # reddit-early-dynamics
 
-This project measures how early engagement unfolds on Reddit, focusing on what can be observed during the first hours of a post’s life under real platform constraints.
+This repository produces a minimal, audit-friendly description of early engagement visibility on Reddit using public listing snapshots. The analysis is strictly observational and designed to make observability limits explicit rather than model around them.
 
-The study targets r/AskReddit, one of Reddit’s largest and most active communities. Its posting volume allows many posts to be observed entering and exiting visibility within short time windows, without long-term tracking or intervention.
+The study is scoped to r/AskReddit and measures what can be directly observed about posts as they first become visible in Reddit’s public listings.
 
-The project is strictly observational. No posts are interacted with.
+The unit of analysis is the post-segment (`post_id`, `segment_id`), where segments are uninterrupted collection periods separated by hard gaps.
 
----
-
-## Listing surfaces and visibility
-
-Reddit exposes post visibility through a set of default subreddit sorting views. This project observes a subset that is informative for early visibility and engagement:
-
-- `/new`  
-  chronological feed of newly created posts
-
-- `hot`  
-  default ranked view
-
-- `rising`  
-  posts gaining engagement quickly
-
-- `controversial`  
-  posts with polarized voting
-
-Only these views are observed. They are sampled exactly as exposed through Reddit’s public API, without modification, deeper paging, or per-post polling.
+Tables figures and generated summaries are derived from the analysis tables. Investigation materials may read raw snapshots.
 
 ---
 
-## What is collected
+## Why this exists
 
-Three parallel data streams are captured on a fixed 15-minute cadence over a single 7-day collection window.
-
-### 1. Recent posts (`/new`)
-
-Up to 1,000 of the most recent posts are recorded each run.
-
-On r/AskReddit, `/new` typically spans roughly 2–4 hours of post creation. Most posts are therefore observed multiple times during their earliest visible period, producing several snapshots per post before they fall out of view.
-
-This provides dense early-life coverage without individual post tracking.
+Reddit’s public APIs expose no listing history and no impression data. As a result, analyses of engagement often condition on posts that persist, receive interaction, or enter ranked feeds, without bounding what was never observed. This project treats observability itself as the object of measurement, restricting claims to what can be seen under snapshot-based collection.
 
 ---
 
-### 2. Long-horizon cohort (~1%)
+## Minimal analysis pipeline
 
-A **cohort** is a small, deterministic set of posts selected during days 2–3 of the 7-day window and followed to later post ages.
+scripts/analysis/00_build_tables.py  
+scripts/analysis/01_ranked_intersections.py  
+scripts/analysis/02_write_facts.py  
 
-Cohort posts are:
-- selected from early `/new` observations
-- grouped into low, medium, and high early engagement bins
-- limited in size to control API usage
-- followed at fixed post ages rather than continuously
+Outputs:
 
-The cohort links early behavior to later outcomes without expanding into full per-post monitoring.
+analysis_outputs/run_level.csv  
+analysis_outputs/post_level.csv  
+analysis_outputs/ranked_intersections.csv  
+analysis_outputs/ANALYSIS_FACTS.md  
 
----
-
-### 3. Visibility filters
-
-Each run also snapshots the first page of ranked listing views:
-
-- `hot`
-- `rising`
-- `controversial`
-
-Up to 100 posts are recorded per surface per run. These snapshots capture competitive visibility without assuming continuous presence or full coverage.
+Each script is single-purpose. Downstream steps consume only the analysis tables produced upstream.
 
 ---
 
-## API constraints and design choices
+## What this measures
 
-API rate limiting is treated as a hard constraint.
+- Visibility of posts as observed in subreddit listing snapshots
+- Repeated exposure in the chronological feed (`/new`)
+- Lower-bound intersections with ranked listings (`/hot`, `/rising`)
+- Timing of ranked appearances relative to first observation
+- Effects of collection gaps via explicit segmentation
 
-r/AskReddit produces content at a scale where dense per-post polling risks throttling and data loss. The collection is designed to remain stable under these conditions:
-
-- listing-based access instead of item-level polling  
-- fixed execution cadence  
-- bounded request volume per run  
-- no retry storms or backfills  
-
-Partial observability and truncation are treated as properties of the system, not errors to eliminate.
+All measurements reflect what is observed, not total lifetime behavior.
 
 ---
 
-## Research focus
+## What this does not claim
 
-**Primary question**  
-How does engagement begin to accumulate while posts are first becoming visible?
+- No causal claims
+- No ranking-algorithm inference
+- No impressions or exposure measurement
+- No user-level tracking
+- No stitching across hard gaps
+- No prediction or optimization framing
 
-This includes:
-- how many posts receive any activity
-- how quickly comments and votes appear
-- how early engagement trajectories diverge
-
-**Secondary question**  
-How does very early engagement relate to later outcomes and visibility in ranked listings?
+Unobserved time is treated as non-inferable.
 
 ---
 
-## Current status
+## Observed patterns
 
-Collection is ongoing.
+- Posts observed in `/new` typically remain visible across many consecutive snapshots within uninterrupted collection periods.
+- Only a small minority of observed posts intersect with ranked listings; these intersections are lower bounds due to snapshot truncation.
+- When ranked intersections occur, they are usually observed within one or two snapshot intervals of first appearance in `/new`.
+- Many posts already have comments present at first observation.
+- Collection gaps alter the composition of first-observed posts and require explicit segmentation.
 
-This repository reflects live collection behavior, operational stability, and documented measurement limits. Interpretation and analysis are intentionally not included at this stage.
+Full results are described in [`docs/results.md`](docs/results.md).
 
 ---
 
-## What this project is not
+## Key outputs
 
-This project does not:
-- predict post success
-- infer ranking algorithms
-- measure impressions or exposure
-- assume full or continuous visibility
-- track users
-- provide setup or execution instructions
+- analysis_outputs/run_level.csv  
+  Run universe cadence gaps and segment boundaries.
 
-It measures what can be learned from public interfaces under partial observability.
+- analysis_outputs/post_level.csv  
+  Post-segment aggregates from `/new` observations within segments.
+
+- analysis_outputs/ranked_intersections.csv  
+  Observed intersections between `/new` post-segments and ranked surfaces.
+
+- analysis_outputs/ANALYSIS_FACTS.md  
+  A machine-generated summary derived solely from the analysis tables.
+
+---
+
+## Repository structure
+
+analysis_outputs/  
+Analysis tables and audit summaries used by the main analysis.
+
+docs/  
+Methodology dataset description results visuals and a targeted investigation.
+
+scripts/  
+Single-purpose analysis and audit scripts used to produce the tables above.
+
+---
+
+## Documentation
+
+- [`docs/methodology.md`](docs/methodology.md) — measurement mechanics and table definitions  
+- [`docs/dataset_description.md`](docs/dataset_description.md) — schema-level description of outputs  
+- [`docs/results.md`](docs/results.md) — narrative interpretation  
+- [`docs/visuals/`](docs/visuals/) — figures scripts and inspectable data  
+- [`observation_depth_investigation.md`](docs/analysis/observation_depth_investigation/observation_depth_investigation.md) — investigation of the observation-depth distribution

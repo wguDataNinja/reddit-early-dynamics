@@ -1,0 +1,34 @@
+{
+  "first_run_started_utc": "2026-01-06T16:36:56.487792Z",
+  "last_run_started_utc": "2026-02-03T05:27:42.653740Z",
+  "required_fields_null_counts": {
+    "core_miss_flag": 0,
+    "core_row_count_controversial": 17,
+    "core_row_count_hot": 17,
+    "core_row_count_new": 17,
+    "core_row_count_rising": 17,
+    "errors_this_run": 1459,
+    "run_finished_utc": 17,
+    "run_id_utc": 0,
+    "run_skipped_flag": 0,
+    "run_started_utc": 0
+  },
+  "required_fields_presence_counts": {
+    "core_miss_flag": 1480,
+    "core_row_count_controversial": 1480,
+    "core_row_count_hot": 1480,
+    "core_row_count_new": 1480,
+    "core_row_count_rising": 1480,
+    "errors_this_run": 1480,
+    "run_finished_utc": 1480,
+    "run_id_utc": 1480,
+    "run_skipped_flag": 1480,
+    "run_started_utc": 1480
+  },
+  "run_classification_counts": {
+    "partial": 7,
+    "skipped": 17,
+    "success": 1456
+  },
+  "total_records": 1480
+}

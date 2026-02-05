@@ -1,0 +1,12 @@
+{
+  "total_rows": 205,
+  "count_after_gap": 156,
+  "count_not_after_gap": 49,
+  "fraction_after_gap": 0.7609756097560976,
+  "counts_by_segment": {
+    "0": 49,
+    "1": 43,
+    "2": 27,
+    "3": 86
+  }
+}
