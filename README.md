@@ -104,5 +104,5 @@ Single-purpose analysis and audit scripts used to produce the tables above.
 - [`docs/methodology.md`](docs/methodology.md) — measurement mechanics and table definitions  
 - [`docs/dataset_description.md`](docs/dataset_description.md) — schema-level description of outputs  
 - [`docs/results.md`](docs/results.md) — narrative interpretation  
-- [`docs/visuals/`](docs/visuals/) — figures scripts and inspectable data  
+- [`docs/visuals/README.md`](docs/visuals/README.md) — figures with inline renderings 
 - [`observation_depth_investigation.md`](docs/analysis/observation_depth_investigation/observation_depth_investigation.md) — investigation of the observation-depth distribution
